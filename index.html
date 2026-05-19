@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>청년 ON AIR - 2026년 05+06월호</title>
+  
+  <!-- Google Fonts 로드 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=DM+Mono&family=Noto+Serif+KR:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mainBlue: '#33B6D8',     /* 스카이블루 */
+            iceBlue: '#EFF9FC',     /* 아이스 블루 (배경) */
+            secBlue: '#D6F2FA',     /* 카드 및 강조 배경 */
+            pointYellow: '#FFE44D', /* 포인트 옐로우 */
+            deepNavy: '#1A2E35',    /* 딥 네이비 텍스트 */
+            subText: '#4A7A8A',     /* 보조 텍스트 */
+            borderBlue: '#85CDE8'   /* 프레임 보더 */
+          },
+          fontFamily: {
+            sans: ['Noto Sans KR', 'sans-serif'],
+            mono: ['DM Mono', 'monospace'],
+            serif: ['Noto Serif KR', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 전역 가독성 및 자간 규칙 (경향신문 모바일 기사 참고 최적화) */
+    body {
+      word-break: keep-all;
+      background-color: #E2E8F0; /* 모바일 기기 외부 배경색 */
+    }
+    
+    /* 경향신문 특유의 세밀하고 묵직한 고대비 기사 스타일 이식 */
+    .news-text {
+      letter-spacing: -0.035em !important; /* 좁은 자간으로 시선 분산 방지 */
+    }
+
+    /* 경향신문 모바일 최적 가독성을 기본 주입하기 위한 클래스 */
+    .news-body-content {
+      font-size: 19px !important;
+      line-height: 1.85 !important;
+      letter-spacing: -0.035em !important;
+    }
+
+    /* 페이지 슬라이드 애니메이션 */
+    .page-slide {
+      display: none;
+      opacity: 0;
+      transform: translateX(15px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    
+    .page-slide.active {
+      display: block;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* 카드 호버 트랜지션 효과 */
+    .card-transition {
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-transition:hover {
+      transform: translateY(-3px);
+      border-color: #33B6D8;
+    }
+
+    /* ON-AIR 레이저 웨이브 텍스트 효과 (파도처럼 흘러가는 빛) */
+    @keyframes shine-wave {
+      0% { background-position: -120px; }
+      100% { background-position: 120px; }
+    }
+    .wave-glow-text {
+      background: linear-gradient(90deg, #FFE44D 0%, #FFFFFF 50%, #FFE44D 100%);
+      background-size: 100px 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shine-wave 2s infinite linear;
+      display: inline-block;
+    }
+
+    /* 스타트 단추 힙한 바운싱 & 글로잉 효과 */
+    @keyframes start-bounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-5px) scale(1.03); }
+    }
+    .start-btn-pulse {
+      animation: start-bounce 2s infinite ease-in-out;
+      box-shadow: 0 10px 25px -5px rgba(255, 228, 77, 0.45);
+    }
+    .start-btn-pulse:hover {
+      box-shadow: 0 12px 28px -3px rgba(255, 228, 77, 0.65);
+    }
+
+    /* 스크롤바 커스텀 */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #33B6D8;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-deepNavy">
+
+  <!-- 모바일 뷰 전용 통합 도크 (Max-width: 430px 제한) -->
+  <div class="max-w-[430px] mx-auto min-h-screen bg-iceBlue shadow-2xl border-x border-[#CBD5E1] relative pb-28 flex flex-col justify-between">
+    
+    <!-- 최상단 리딩 프로그레스 바 -->
+    <div class="fixed top-0 left-0 right-0 z-50 max-w-[430px] mx-auto bg-slate-200/50 h-1">
+      <div id="progressBar" class="bg-mainBlue h-full w-0 transition-all duration-150"></div>
+    </div>
+
+    <div>
+      <!-- 🎙️ 플로팅 퀵 메뉴 탑 툴바 -->
+      <div class="sticky top-1 z-40 px-3 flex justify-between items-center h-12 bg-white/90 backdrop-blur-md shadow-xs rounded-full mx-3 my-2 border border-secBlue">
+        <div class="flex items-center space-x-2">
+          <span class="text-lg">🎙️</span>
+          <span class="text-xs font-black tracking-widest text-mainBlue font-sans">YOUTH ON AIR</span>
+        </div>
+        <div class="flex items-center space-x-1">
+          <!-- 폰트 크기 변경기 -->
+          <button id="fontSizeBtn" class="p-1.5 hover:bg-secBlue rounded-lg transition-colors text-xs font-bold flex items-center space-x-0.5" title="본문 크기 조정">
+            <span>가</span><span class="text-[10px] text-mainBlue font-extrabold uppercase">md</span>
+          </button>
+          <!-- 목차 바로가기 -->
+          <button onclick="toggleTOC()" class="p-1.5 hover:bg-secBlue rounded-lg transition-colors flex items-center space-x-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <span class="text-xs font-bold text-mainBlue">목차</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 상단 챕터 네비게이터 표시 (총 9페이지: 커버 + 기사 서브 포함 9페이지) -->
+      <div id="chapterIndicator" class="px-5 pt-3 flex justify-between items-center text-xs font-bold text-subText uppercase tracking-wider font-mono">
+        <span id="currentChapterSub">청년 ON AIR</span>
+        <span id="currentChapterPage" class="text-mainBlue bg-mainBlue/10 px-2.5 py-0.5 rounded-full">1 / 9</span>
+      </div>
+
+      <!-- ─────────────────────────────────────────── -->
+      <!-- e-Book 슬라이드 전환 바디 -->
+      <!-- ─────────────────────────────────────────── -->
+      <div id="swipeArea" class="px-5 pt-6 pb-4 min-h-[50vh]">
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- [페이지 1] 커버 히어로 & 간결하고 세련된 ON AIR 라인업 목차 -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="page-slide active space-y-8" data-sub="청년 ON AIR" data-index="Cover">
+          <header class="bg-mainBlue text-white min-h-[380px] flex flex-col justify-center items-center text-center relative px-6 overflow-hidden rounded-[32px] shadow-sm py-8">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+            <div class="absolute bottom-0 left-0 w-40 h-40 bg-secBlue/20 rounded-full blur-2xl -ml-10 -mb-10"></div>
+
+            <div class="z-10 space-y-5 flex flex-col items-center w-full">
+              <!-- ISSUE 02로 수정 반영 -->
+              <span class="font-mono text-xs font-bold tracking-[0.3em] text-[#E0F2FE]">2026 05+06 / ISSUE 02</span>
+              
+              <div class="flex flex-col items-center">
+                <!-- 마이크 이모지와 파도 빛 효과가 탑재된 ON-AIR 뱃지 -->
+                <div class="flex items-center space-x-1.5 bg-black/35 backdrop-blur-md px-4 py-1.5 rounded-full mb-3 border border-white/10">
+                  <span class="text-xs">🎙️</span>
+                  <span class="text-[11px] font-black uppercase tracking-widest wave-glow-text">LIVE ON-AIR</span>
+                </div>
+                <h1 class="text-[38px] font-black tracking-tight leading-none">청년 <span class="text-pointYellow">ON AIR</span></h1>
+              </div>
+              
+              <p class="text-base font-medium tracking-wider text-sky-100">Jump-up 도약하는 청년</p>
+              <p class="text-[10px] font-medium tracking-wide opacity-85">서울지방고용노동청 · 서울 고용복지+ 센터</p>
+              
+              <!-- 상단 커버 내부 START! 바운스 버튼 -->
+              <button onclick="nextPage()" class="start-btn-pulse bg-pointYellow hover:bg-white text-deepNavy font-black px-10 py-3.5 rounded-2xl text-base transition-all active:scale-95 flex items-center justify-center space-x-2 mt-4">
+                <span>START! ➔</span>
+              </button>
+            </div>
+          </header>
+
+          <!-- 🎙️ 심플하고 간결하게 정돈된 ON AIR 라인업 목차 -->
+          <div class="p-6 rounded-3xl border-2 border-secBlue bg-white text-left space-y-5 shadow-xs">
+            <div class="flex items-center justify-between border-b pb-3 border-slate-100">
+              <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+                </svg>
+                <h3 class="text-base font-black tracking-tight text-mainBlue font-sans">웹진 ON AIR 라인업</h3>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400">INDEX</span>
+            </div>
+            
+            <div class="space-y-3 font-sans">
+              <!-- CH 1 -->
+              <button onclick="jumpToPage(1)" class="w-full p-4 bg-iceBlue hover:bg-secBlue border border-transparent hover:border-mainBlue/30 rounded-2xl transition-all text-left flex items-center justify-between card-transition">
+                <div class="flex items-center space-x-4">
+                  <span class="font-mono text-lg font-black text-mainBlue">01</span>
+                  <p class="text-sm font-black text-deepNavy mt-1">01 스페셜 로드맵: 1934 프로젝트</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+              </button>
+
+              <!-- CH 2 -->
+              <button onclick="jumpToPage(2)" class="w-full p-4 bg-iceBlue hover:bg-secBlue border border-transparent hover:border-mainBlue/30 rounded-2xl transition-all text-left flex items-center justify-between card-transition">
+                <div class="flex items-center space-x-4">
+                  <span class="font-mono text-lg font-black text-mainBlue">02</span>
+                  <p class="text-sm font-black text-deepNavy mt-1">02 청년의 마음을 어루만지다</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+              </button>
+
+              <!-- CH 3 -->
+              <button onclick="jumpToPage(4)" class="w-full p-4 bg-iceBlue hover:bg-secBlue border border-transparent hover:border-mainBlue/30 rounded-2xl transition-all text-left flex items-center justify-between card-transition">
+                <div class="flex items-center space-x-4">
+                  <span class="font-mono text-lg font-black text-mainBlue">03</span>
+                  <p class="text-sm font-black text-deepNavy mt-1">03 서울고용센터는 지금</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+              </button>
+
+              <!-- CH 4 -->
+              <button onclick="jumpToPage(5)" class="w-full p-4 bg-iceBlue hover:bg-secBlue border border-transparent hover:border-mainBlue/30 rounded-2xl transition-all text-left flex items-center justify-between card-transition">
+                <div class="flex items-center space-x-4">
+                  <span class="font-mono text-lg font-black text-mainBlue">04</span>
+                  <p class="text-sm font-black text-deepNavy mt-1">04 현직자 딥다이브: 취업준비콘서트</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+              </button>
+
+              <!-- CH 5 -->
+              <button onclick="jumpToPage(6)" class="w-full p-4 bg-iceBlue hover:bg-secBlue border border-transparent hover:border-mainBlue/30 rounded-2xl transition-all text-left flex items-center justify-between card-transition">
+                <div class="flex items-center space-x-4">
+                  <span class="font-mono text-lg font-black text-mainBlue">05</span>
+                  <p class="text-sm font-black text-deepNavy mt-1">05 현직자 딥다이브: 심층 인터뷰</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+              </button>
+
+              <!-- CH 6 -->
+              <button onclick="jumpToPage(7)" class="w-full p-4 bg-iceBlue hover:bg-secBlue border border-transparent hover:border-mainBlue/30 rounded-2xl transition-all text-left flex items-center justify-between card-transition">
+                <div class="flex items-center space-x-4">
+                  <span class="font-mono text-lg font-black text-mainBlue">06</span>
+                  <p class="text-sm font-black text-deepNavy mt-1">06 청년ON기자단 현장브리핑: 모의면접DAY</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+              </button>
+
+              <!-- CH 7 -->
+              <button onclick="jumpToPage(8)" class="w-full p-4 bg-iceBlue hover:bg-secBlue border border-transparent hover:border-mainBlue/30 rounded-2xl transition-all text-left flex items-center justify-between card-transition">
+                <div class="flex items-center space-x-4">
+                  <span class="font-mono text-lg font-black text-mainBlue">07</span>
+                  <p class="text-sm font-black text-deepNavy mt-1">07 청년ON기자단 현장브리핑: 상생 채용박람회</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+              </button>
+
+              <!-- CH 8 -->
+              <button onclick="jumpToPage(9)" class="w-full p-4 bg-iceBlue hover:bg-secBlue border border-transparent hover:border-mainBlue/30 rounded-2xl transition-all text-left flex items-center justify-between card-transition">
+                <div class="flex items-center space-x-4">
+                  <span class="font-mono text-lg font-black text-mainBlue">08</span>
+                  <p class="text-sm font-black text-deepNavy mt-1">08 UPCOMING EVENTS & QUIZ</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-mainBlue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- [페이지 2] 01 스페셜 로드맵: 1934 프로젝트 -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="page-slide space-y-6" data-sub="01 스페셜 로드맵: 1934 프로젝트" data-index="1 / 8">
+          
+          <!-- 특별하게 바뀐 가운데 정렬 헤더 블록 -->
+          <div class="flex flex-col items-center text-center space-y-3 mb-10 pb-6 border-b border-secBlue/60">
+            <span class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-secBlue/80 text-mainBlue text-xs font-black tracking-widest uppercase rounded-full border border-borderBlue/50 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue animate-ping"></span>
+              <span>스페셜 로드맵</span>
+            </span>
+            <h2 class="text-[28px] font-black tracking-tight leading-snug text-deepNavy news-text mt-1 max-w-[340px] drop-shadow-xs">
+              모든 경험이 경력이 되도록
+            </h2>
+            <p class="text-sm font-bold text-subText tracking-tight max-w-[320px]">
+              1934 청년 지원 프로젝트를 소개합니다
+            </p>
+            <div class="flex items-center justify-center space-x-2 pt-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+              <span class="w-12 h-[3px] bg-gradient-to-r from-mainBlue/20 via-mainBlue/70 to-mainBlue/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+            </div>
+          </div>
+
+          <!-- 인트로 문구 (요청사항: 가운데 정렬 적용) -->
+          <div class="p-6 rounded-[24px] border-2 border-mainBlue bg-white shadow-xs text-center">
+            <div class="article-body font-normal text-deepNavy news-body-content">
+              <p>취업을 준비하고 있지만, 어디서부터 시작해야 할지 모르겠다고요? 혹은 일을 그만둔 뒤, 다시 시작할 용기가 나지 않는다고요? 지금 이 순간에도 수많은 청년들이 같은 고민을 하고 있습니다.</p>
+            </div>
+          </div>
+
+          <!-- 고드래곤 일러스트 프레임 (요청사항: 1쪽 마스코트 고드래곤 일러스트 사진 칸 삭제 완료) -->
+
+          <!-- 대담 형식 본문 -->
+          <div class="space-y-6">
+            <!-- 대담 1 (요청사항: 고드래곤 옆 1번 사진 작게 동그랗게 매핑) -->
+            <div class="p-5 rounded-[24px] border border-secBlue bg-white space-y-2 shadow-sm">
+              <div class="flex items-center space-x-2 border-b pb-2 border-slate-100">
+                <div class="w-8 h-8 rounded-full overflow-hidden border border-[#0284C7] flex-none">
+                  <img src="1번.jpg" alt="고드래곤" class="w-full h-full object-cover">
+                </div>
+                <p class="text-xs font-black text-mainBlue">고드래곤</p>
+              </div>
+              <p class="text-[19px] leading-[1.85] text-slate-700 italic news-text news-body-content">
+                "안녕하세요! 저는 고용노동부의 마스코트 고드래곤이에요. 오늘은 서울고용센터에서 야심차게 새롭게 선보이는 <strong class="text-mainBlue">'1934 청년 지원 프로젝트'</strong>를 소개해드리려고 해요. 저도 궁금한 게 많아서, 직접 담당자 선생님을 찾아가 물어봤답니다! 선생님, 요즘 '나만의 숨 고르기’ 중인 청년들이 많다는 이야기가 들린던데... 이게 어떤 상황이고, 그래서 1934 프로젝트가 어떻게 만들어진 건지 설명해 주실 수 있을까요?"
+              </p>
+            </div>
+
+            <!-- 답변 1 및 주무관 프로필 (요청사항: 이미옥 주무관 이름 왼쪽에 2번 프로필 사진 원형 작게 삽입) -->
+            <div class="space-y-4 pt-2">
+              <div class="flex items-center space-x-3 bg-white p-4 rounded-[24px] border border-secBlue shadow-xs">
+                <div class="w-14 h-14 rounded-full overflow-hidden border border-[#0284C7] flex-none">
+                  <img src="2번.jpg" alt="이미옥 주무관" class="w-full h-full object-cover">
+                </div>
+                <div>
+                  <h4 class="text-sm font-black text-deepNavy">이미옥 주무관</h4>
+                  <p class="text-[11px] text-slate-500">서울고용센터 취업지원총괄과</p>
+                </div>
+              </div>
+              <div class="article-body font-normal text-deepNavy news-body-content space-y-6">
+                <p>"네, 통계 용어로는 ‘쉬었음 청년’이라고 부르지만, 사실은 잠시 멈춰 서서 내일을 고민하는 청년들을 말해요. 청년들이 단순히 의지가 없는 게 아니라, 번아웃으로 지쳐 있거나 나에게 맞는 길이 무엇인지 찾기 위해 잠시 쉼표를 찍고 있는 것이거든요."</p>
+                <p>"어디서부터 시작해야 할지 모르거나, 번아웃으로 지쳐있거나, 어떤 일에 나에게 맞는지 모르는 경우가 많아요. 서울고용센터는 바로 이 지점에 주목해서, 1934프로젝트를 시작했습니다."</p>
+                <p>"눈치채신 분들도 있겠지만, 이름에는 두 가지 의미가 담겨 있어요. 19세부터 34세까지, 취업을 준비하는 모든 청년(강조)을 대상으로 한다는 뜻이기도 하고, 숫자 하나하나에도 메시지를 담았어요. <strong class="text-mainBlue">1은 '일', 9는 '구하다(求)', 3은 '삶', 4는 '사랑'</strong> — 즉, <strong>"일을 구하고 삶을 사랑하자"</strong>는 메시지예요. 단순히 스펙을 쌓거나 생계를 위한 취업이 아니라, 나만의 속도로 걷고 있는 모든 청년을 응원하는 뜻도 함께 담겨 있답니다."</p>
+              </div>
+            </div>
+
+            <!-- 대담 2 (요청사항: 고드래곤 이름 옆 1번 이미지 작게 동그랗게 매핑) -->
+            <div class="p-5 rounded-[24px] border border-secBlue bg-white space-y-2 shadow-sm">
+              <div class="flex items-center space-x-2 border-b pb-2 border-slate-100">
+                <div class="w-8 h-8 rounded-full overflow-hidden border border-[#0284C7] flex-none">
+                  <img src="1번.jpg" alt="고드래곤" class="w-full h-full object-cover">
+                </div>
+                <p class="text-xs font-black text-mainBlue">고드래곤</p>
+              </div>
+              <p class="text-[19px] leading-[1.85] text-slate-700 italic news-text news-body-content">
+                "이름부터 심상치 않은데요! 그럼 실제로 어떤 프로그램들이 운영되나요?"
+              </p>
+            </div>
+
+            <!-- 답변 2 (요청사항: 이미옥 주무관 프로필 2번.jpg 원형 작게 적용) -->
+            <div class="space-y-4 pt-2">
+              <div class="flex items-center space-x-3 bg-white p-4 rounded-[24px] border border-secBlue shadow-xs">
+                <div class="w-14 h-14 rounded-full overflow-hidden border border-[#0284C7] flex-none">
+                  <img src="2번.jpg" alt="이미옥 주무관" class="w-full h-full object-cover">
+                </div>
+                <div>
+                  <h4 class="text-sm font-black text-deepNavy">이미옥 주무관</h4>
+                  <p class="text-[11px] text-slate-500">서울고용센터 취업지원총괄과</p>
+                </div>
+              </div>
+              <div class="article-body font-normal text-deepNavy news-body-content space-y-6">
+                <p>"청년의 취업준비 상황에 따라 세 가지 유형에 참여가 다 가능해요."</p>
+                <p>
+                  첫 번째는  <strong>'일구(19)스캐너'</strong>  —  <strong>"어떤 일이 나한테 잘 맞을까?"</strong>  라는 질문에서 출발해요. 자기 이해와 직무 이해를 바탕으로 한 취업컨설팅으로, 내게 딱 맞는 일을 찾아가는 과정이에요.
+                </p>
+                <p>
+                  두 번째는  <strong>'일과 삶(3) 커넥터'</strong>  —  <strong>"이 일을 계속 할까? 바꿀까?"</strong>  고민하는 청년들을 위한 프로그램이에요. 경력진단과 재설계를 통해 새로운 방향을 탐색할 수 있도록 돕죠.
+                </p>
+                <p>
+                  세 번째는  <strong>'마음 사(4)이다'</strong>  —  <strong>"나만 이렇게 힘든가?"</strong>  라고 느끼는 청년들을 위한 정서 지원 프로그램이에요. 지친 마음을 토닥이고, 번아웃을 극복할 수 있도록 함께해요.
+                </p>
+                <p>"세 가지 유형 모두 서울고용센터 청년ON라운지에서 유기적으로 연결되어 운영돼요. 진로·정서 상담부터 진로설계 프로그램 커리어 스타트업, 1:1 취업컨설팅, 실전형 면접연습 프로그램 모의면접 DAY, 기업의 현직자와 만날 수 있는 취업준비콘서트까지 — 혼자가 아닌 '함께', 단계별로 지원받을 수 있어요."</p>
+              </div>
+            </div>
+
+            <!-- 대담 3 (요청사항: 고드래곤 이름 옆 1번 이미지 작게 동그랗게 매핑) -->
+            <div class="p-5 rounded-[24px] border border-secBlue bg-white space-y-2 shadow-sm">
+              <div class="flex items-center space-x-2 border-b pb-2 border-slate-100">
+                <div class="w-8 h-8 rounded-full overflow-hidden border border-[#0284C7] flex-none">
+                  <img src="1번.jpg" alt="고드래곤" class="w-full h-full object-cover">
+                </div>
+                <p class="text-xs font-black text-mainBlue">고드래곤</p>
+              </div>
+              <p class="text-[19px] leading-[1.85] text-slate-700 italic news-text news-body-content">
+                "마지막으로 청년들에게 한 마디 해주신다면요?"
+              </p>
+            </div>
+
+            <!-- 답변 3 (요청사항: 이미옥 주무관 프로필 2번.jpg 원형 작게 적용) -->
+            <div class="space-y-4 pt-2">
+              <div class="flex items-center space-x-3 bg-white p-4 rounded-[24px] border border-secBlue shadow-xs">
+                <div class="w-14 h-14 rounded-full overflow-hidden border border-[#0284C7] flex-none">
+                  <img src="2번.jpg" alt="이미옥 주무관" class="w-full h-full object-cover">
+                </div>
+                <div>
+                  <h4 class="text-sm font-black text-deepNavy">이미옥 주무관</h4>
+                  <p class="text-[11px] text-slate-500">서울고용센터 취업지원총괄과</p>
+                </div>
+              </div>
+              <div class="article-body font-normal text-[#1F2937] bg-[#EFF9FC] p-6 rounded-[24px] border border-[#BAE6FD] italic news-body-content">
+                "취업이 막막하게 느껴진다면 혼자만의 고민으로 불안해 하지 않았으면 해요. 서울고용센터 청년ON라운지에서는, 여러분의 모든 경험이 경력이 될 수 있도록 함께 설계하는 한편, 나만의 숨고르기 여정에서의 격려와 응원도 함께 이어가겠습니다."
+              </div>
+            </div>
+          </div>
+
+          <!-- [마무리 인포 박스] -->
+          <div class="p-6 rounded-3xl border-2 border-dashed border-[#85CDE8] bg-[#EFF9FC] space-y-4 text-center">
+            <h4 class="text-base font-black text-[#0284C7]">1934 청년 지원 프로젝트에 대해 더 자세히 알고 싶다면?</h4>
+            <p class="text-sm text-slate-700 font-bold">고매니저가 기다리는 오픈카톡방으로 놀러오세요!</p>
+            <div class="pt-2">
+              <a href="https://open.kakao.com/o/goxRZ6hi" target="_blank" class="inline-flex items-center space-x-2 bg-mainBlue hover:bg-[#0369A1] text-white font-black px-6 py-3.5 rounded-2xl text-sm transition-all shadow-md active:scale-95">
+                <span>💬 오픈카톡방 링크 입장하기</span>
+                <span>➔</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- [페이지 3] 02 청년의 마음을 어루만지다 (마음 talk, 정책 pick 콘서트 현장 스케치) -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="page-slide space-y-6" data-sub="02 청년의 마음을 어루만지다" data-index="2 / 8">
+          
+          <!-- 헤더 블록 -->
+          <div class="flex flex-col items-center text-center space-y-3 mb-10 pb-6 border-b border-secBlue/60">
+            <span class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-secBlue/80 text-mainBlue text-xs font-black tracking-widest uppercase rounded-full border border-borderBlue/50 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue animate-ping"></span>
+              <span>콘서트 현장 스케치</span>
+            </span>
+            <h2 class="text-[28px] font-black tracking-tight leading-snug text-deepNavy news-text mt-1 max-w-[340px] drop-shadow-xs">
+              청년마음톡(TALK), 정책픽(PICK) 콘서트 현장 스케치
+            </h2>
+            <p class="text-sm font-bold text-subText tracking-tight max-w-[320px]">
+              청년의 마음을 어루만지다
+            </p>
+            <div class="flex items-center justify-center space-x-2 pt-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+              <span class="w-12 h-[3px] bg-gradient-to-r from-mainBlue/20 via-mainBlue/70 to-mainBlue/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+            </div>
+          </div>
+
+          <!-- 요청사항: 현장 사진 1 -> 3번 사진 매핑 완료 -->
+          <div class="w-full rounded-2xl overflow-hidden border border-secBlue shadow-xs my-4">
+            <img src="3번.jpg" alt="1934 현수막 사진" class="w-full h-auto object-cover">
+          </div>
+
+          <div class="p-6 rounded-[24px] border-2 border-mainBlue bg-white shadow-xs">
+            <div class="article-body font-normal text-deepNavy news-body-content">
+              <p>5월 13일 오후 1시, 청년ON라운지에 수많은 청년들의 발걸음이 이어졌습니다. 서울고용센터에서는 ‘1934 청년 지원 프로젝트’의 시작을 알리며 준비한 「청년 마음톡(talk), 정책픽(pick) 콘서트」에는 <strong class="text-mainBlue">100여 명의 청년이 모였는데요.</strong> 단순한 취업 행사가 아닌, 청년들에게 정서적 지지와 정책적 지원을 함께 제공하며, 각자의 삶과 마음을 함께 돌아보는 특별한 자리였습니다. 이날 행사장 곳곳에는 진로부터 삶 전반에 대한 고민과 다양한 이야기가 자연스레 흘러들었답니다.</p>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-bold text-deepNavy text-center mt-8 mb-4">내 고민에 딱 맞는 상담과 청년정책이 여기 다 있다고?</h3>
+          
+          <!-- 요청사항: 현장 사진 3 & 현장 사진 2 -> 각각 4번, 5번 사진 매핑 완료 -->
+          <div class="grid grid-cols-2 gap-2 my-2">
+            <div class="w-full rounded-xl overflow-hidden border border-borderBlue">
+              <img src="4번.jpg" alt="진로상담부스" class="w-full h-36 object-cover">
+            </div>
+            <div class="w-full rounded-xl overflow-hidden border border-borderBlue">
+              <img src="5번.jpg" alt="주거상담부스" class="w-full h-36 object-cover">
+            </div>
+          </div>
+
+          <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-4">
+            <div class="article-body font-normal text-slate-600 news-body-content space-y-4">
+              <!-- 요청사항: "70여명의 청년들" 볼드체 적용 -->
+              <p>이날 행사장에는 다양한 청년 유관기관들이 총출동했습니다. 관내 4개대학 (상명대·서울시립대·성균관대·한국외대) 대학일자리플러스센터는 진로 상담을, 종로여성인력개발센터와 (주)아르케는 청년 일경험 상담을 맡았습니다. 직업훈련은 한국표준협회와 SK인포섹이, 해외취업 상담은 한국산업인력공단이 함께했고, 종로주거안심센터의 주거 상담, (사)미래교육네트워크의 금융 상담, 인재채움뱅크의 공백 연계 일자리 상담까지 — 취업 걱정부터 오늘 당장의 생활 고민까지, 청년들이 진로, 취업 문제뿐 아니라 일상에서 마주하는 거의 모든 고민을 해결할 수 있도록 폭넓게 지원했습니다. 총 <strong class="text-deepNavy">70여명의 청년들</strong>이 상담 부스를 찾아왔는데요, 이들의 무거운 고민이 조금은 가벼워졌기를 바랍니다.</p>
+            </div>
+          </div>
+
+          <!-- 요청사항: 현장 사진 4 -> 6번 사진 매핑 완료 -->
+          <div class="w-full rounded-2xl overflow-hidden border border-secBlue shadow-xs my-4">
+            <img src="6번.jpg" alt="청년센터 홍보부스" class="w-full h-auto object-cover">
+          </div>
+
+          <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-4">
+            <div class="article-body font-normal text-slate-600 news-body-content space-y-4">
+              <p>그리고, 상담을 받고 나오거나 일찍 도착한 청년들은 행사장 옆에 마련된 광진·은평·양천 청년센터의 정책 홍보 부스에서 본인에게 지금 당장 필요한 청년정책이나 제도가 무엇인지 알 수 있는 시간도 가졌습니다. 몰라서 못 받았던 다양한 혜택들이, 이날만큼은 손 닿는 곳에 있었습니다.</p>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-bold text-deepNavy text-center mt-8 mb-4">잠깐, 오늘은 즐기는 날이에요!</h3>
+
+          <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-4">
+            <div class="article-body font-normal text-slate-600 news-body-content space-y-4">
+              <!-- 요청사항: 지정된 문단 전면 교체 완료 -->
+              <p>진지한 상담이 이어지는 한편, 행사주제와 관련된 퀴즈를 맞춘 청년들을 위한 룰렛 이벤트와 인생네컷 사진기 앞은 환호성과 웃음소리로 활기가 넘쳤습니다.</p>
+            </div>
+          </div>
+
+          <!-- 요청사항: 현장 사진 7 -> 7번 사진 매핑 및 "기기" 단어 수정 반영 완료 -->
+          <div class="w-full rounded-2xl overflow-hidden border border-secBlue shadow-xs my-4">
+            <img src="7번.jpg" alt="AI 마음상담 키오스크 기기" class="w-full h-auto object-cover">
+          </div>
+
+          <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-4">
+            <div class="article-body font-normal text-slate-600 news-body-content space-y-4">
+              <p>그리고 그 옆에 눈길을 끈 특별한 기기가 있었는데요. 행사장 한켠에 마련된 ‘AI 마음 나, 너’ 마음상담 키오스크 기기였는데요. 취업 준비를 하면서 좀처럼 꺼내기 어려웠던 속마음을 기기 앞에서 털어놓으면, AI가 답변을 건네주는 방식이었습니다. 신기하다는 표정으로 화면을 들여다보다가, 어느새 진지하게 고민을 이야기해나가는 청년들의 모습이 눈길을 끌었습니다. 사람에게는 선뜻 꺼내지 못했던 이야기를, 이날만큼은 조심스럽게 꺼내볼 수 있었습니다. 이런 작지만 따뜻한 순간들이 오늘을 더욱 특별하게 만들어 주었습니다.</p>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-bold text-deepNavy text-center mt-8 mb-4">행사의 대미를 장식한 북토크</h3>
+
+          <!-- 요청사항: 현장 사진 8 -> 8번 사진 매핑 완료 -->
+          <div class="w-full rounded-2xl overflow-hidden border border-secBlue shadow-xs my-4">
+            <img src="8번.jpg" alt="북토크 행사장 전경" class="w-full h-auto object-cover">
+          </div>
+
+          <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-4">
+            <div class="article-body font-normal text-slate-600 news-body-content space-y-4">
+              <p>행사의 하이라이트는 북토크였습니다. 단상에 선 사람은 <strong class="text-mainBlue">박웅현 작가</strong>. "나이는 숫자에 불과하다", "사람을 향합니다" — 누구나 한 번쯤 들어봤을 카피들을 만든 TBWA KOREA 크리에이티브 대표이자, ‘여덟 단어’·’책은 도끼다’의 저자로 익숙한 그가, 청년들을 향해 ‘나만의 별 찾기’라는 주제로 이야기를 시작했습니다.</p>
+              <p>이날의 북토크 현장과 진로상담까지 직접 체험한 청년ON기자단 박수민 기자의 후기를 다음 페이지에서 자세히 전해드립니다!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- [페이지 4] 02-1 청년의 마음을 어루만지다 - 청년ON기자단 체험기 -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="page-slide space-y-6" data-sub="기자단 체험기" data-index="2-1 / 8">
+          
+          <!-- 메인 제목 강조 및 가운데 정렬 헤더 -->
+          <div class="flex flex-col items-center text-center space-y-3 mb-10 pb-6 border-b border-secBlue/60">
+            <span class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-secBlue/80 text-mainBlue text-xs font-black tracking-widest uppercase rounded-full border border-borderBlue/50 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue animate-ping"></span>
+              <span>기자단 체험기</span>
+            </span>
+            <h2 class="text-[28px] font-black tracking-tight leading-snug text-deepNavy news-text mt-1 max-w-[340px] drop-shadow-xs">
+              청년의 마음을 어루만지다
+            </h2>
+            <p class="text-sm font-bold text-subText tracking-tight max-w-[320px]">
+              청년ON기자단 체험기
+            </p>
+            <div class="flex items-center justify-center space-x-2 pt-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+              <span class="w-12 h-[3px] bg-gradient-to-r from-mainBlue/20 via-mainBlue/70 to-mainBlue/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+            </div>
+          </div>
+
+          <!-- 기자 프로필 카드 (요청사항: 우측 작은 원형 프레임으로 사진 1번.jpg 매핑) -->
+          <div class="p-4 rounded-2xl bg-white border border-secBlue flex items-center justify-between shadow-xs">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-full overflow-hidden border border-mainBlue flex-none">
+                <img src="1번.jpg" alt="박수민 기자" class="w-full h-full object-cover">
+              </div>
+              <div>
+                <h4 class="text-xs font-black text-deepNavy">박수민 기자</h4>
+                <p class="text-[10px] text-slate-400">취재 및 작성 | 청년ON기자단</p>
+              </div>
+            </div>
+            <!-- 우측 작은 동그란 프로필 사진 프레임 -->
+            <div class="w-12 h-12 rounded-full overflow-hidden border border-[#0284C7] flex-none">
+              <img src="1번.jpg" alt="박수민" class="w-full h-full object-cover">
+            </div>
+          </div>
+
+          <!-- 요청사항: 현장 사진 9 -> 9번 사진 매핑 완료 -->
+          <div class="w-full rounded-2xl overflow-hidden border border-secBlue shadow-xs my-4">
+            <img src="9번.jpg" alt="북토크 박웅현 작가" class="w-full h-auto object-cover">
+          </div>
+
+          <div class="article-body font-normal text-slate-700 news-body-content space-y-4">
+            <p>“박웅현” 작가님의 이야기는 스펙쌓기나 자기계발 이야기가 아닌 ‘내 길’을 찾아나가는 과정과 불안한 순간들을 다스리는 법 그리고 남들이 만들어놓은 길을 따라가는 것보다 나만의 속도로 나만의 방향을 찾아가는 것이 왜 결국 더 단단한 길이 되는지에 대한 이야기였습니다. 정답을 주는 강연이 아니라 스스로 질문을 던지게 만드는 시간이었습니다.</p>
+            <p>특히, 취업준비생들이 남들과 비교하는 일이 잦고 다양한 잣대로 평가당하는 것이 일상이다 보니 박웅현 작가님이 들려주는 인생에 대한 이야기와 힘든 시기의 청년이 가져야 할 마음가짐이 잘 와닿았습니다.</p>
+          </div>
+
+          <!-- 요청사항: 현장 사진 10 프레임 완전 삭제 반영 완료 -->
+
+          <div class="article-body font-normal text-slate-700 news-body-content space-y-4">
+            <p>사회와 다른 사람의 평가로 정해진 정답에 맞추기보다는 자기 자신에게서 우러나오는 것을 쫓아야 한다는 말은 취업준비를 하는 청년에게 가장 필요하지만, 또 가장 실천하기 어려운 것이기도 하죠.</p>
+            <p>왜냐하면 당장 빠르게 취업해야 할 것 같고, 빠르게 취업하기 위해서는 타인과 다른 특별한 스펙과 경험의 기회를 갖기위해 노력하다 보면, 취업 준비생들은 한없이 합격자소서와 합격스펙을 보며 자신의 기준을 잃기 쉽습니다. 자기가 하고싶다고 생각했던 분야도 계속 탈락의 고배를 마실 때는 자신에게 어울리는 길이 아닌지, 다른 길을 선택해야 하는지 끝없이 고민하곤 합니다.</p>
+            <p>이런 청년들에게 작가님은 다양한 소설 작품 속 인물의 이야기들을 인용하면서 <strong class="text-mainBlue">남들보다 조금 늦거나 다른 길을 가더라도, 자기 중심을 갖고 묵묵히 걸어갈 수 있는 법을 알려주셨습니다.</strong> 앞으로 나아가지 못하고 흔들리는 스스로의 모습에 죄책감과 불안함을 느끼는 저와 같은 많은 청년들이 아마 깊은 위로를 얻었을 거라고 생각합니다. 저 역시도, 이번 강연을 통해 하루하루 충실히 살아갈 수 있는 마음의 힘을 풀충전할 수 있었습니다.</p>
+            <p>흔들리고 있는 수많은 청년들이 적어도 이날만큼은 단단한 마음과 가벼운 발걸음으로 행사장을 나섰길 바랍니다.</p>
+          </div>
+
+          <!-- TBWA 박웅현 프로필 박스 -->
+          <div class="p-5 rounded-[24px] bg-[#EFF9FC] border border-[#BAE6FD] text-xs space-y-2">
+            <p class="font-extrabold text-deepNavy">박웅현 작가 소개</p>
+            <ul class="list-disc pl-4 space-y-1 text-slate-600">
+              <li>TBWA KOREA 크리에이티브 대표</li>
+              <li>고려대학교 신문방송학과 졸업, 뉴욕대학교 대학원 텔레커뮤니케이션 석사</li>
+              <li>주요 저서: 『여덟 단어』, 『책은 도끼다』, 『문장과 순간』</li>
+            </ul>
+          </div>
+
+          <!-- 보너스 트랙 진로상담 후기 -->
+          <div class="p-6 rounded-[28px] border-2 border-slate-200 bg-white shadow-md space-y-4">
+            <h4 class="text-base font-black text-mainBlue text-center">[Bonus track: 대학일자리플러스센터와 함께한 진로상담 후기]</h4>
+            
+            <!-- 요청사항: 현장 사진 11 -> 11번 사진 매핑 및 eDISC 꼬리표 코멘트 완전 삭제 완료 -->
+            <div class="bg-slate-50 border border-slate-200 p-3 pb-4 rounded-lg shadow-sm">
+              <div class="w-full rounded-lg overflow-hidden border border-[#85CDE8]">
+                <img src="11번.jpg" alt="상담 사진" class="w-full h-auto object-cover">
+              </div>
+            </div>
+
+            <div class="article-body font-normal text-slate-700 news-body-content space-y-4">
+              <p>사실 북토크 전, 대학일자리플러스센터 부스에도 들러, 진로 상담을 받았었는데요 eDISC 검사를 활용한 1:1 컨설팅으로, 내 성향을 파악하고 그에 맞는 직장과 직무를 함께 짚어보는 시간을 가졌는데요. 이전 모의면접에서 "스스로에 대해 더 잘 알아야 한다"는 피드백을 받았던 터라, 망설임 없이 자리에 앉았습니다. 그 빈자리를 채워줄 것 같은 예감이 들었거든요.</p>
+              <p>자기소개할 때 장단점을 어떻게 말해야 할지 막막했다면, eDISC 결과를 활용하는 것도 좋은 방법이라는 걸 알았습니다. 30분 상담 동안 결과 해설은 물론, 자기소개서 활용법과 서류 전형에 관한 질문까지 받아주셨습니다. 상담을 마치고 나오면서 디퓨저 선물까지 받았으니, 상담도 받고 선물도 받는 일타이피 시간이었습니다.</p>
+            </div>
+          </div>
+
+          <!-- 마무리 코너 -->
+          <p class="text-center font-bold text-sm text-mainBlue pt-4 italic">
+            "모든 청년이 자신만의 길을 찾는 그 날까지, 서울고용센터가 함께하겠습니다."
+          </p>
+        </div>
+
+        <!-- [페이지 5] 03 서울고용센터는 지금 -->
+        <div class="page-slide space-y-6" data-sub="서울고용센터는 지금" data-index="3 / 8">
+          <div class="flex flex-col items-center text-center space-y-3 mb-10 pb-6 border-b border-secBlue/60">
+            <span class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-secBlue/80 text-mainBlue text-xs font-black tracking-widest uppercase rounded-full border border-borderBlue/50 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue animate-ping"></span>
+              <span>서울고용센터는 지금</span>
+            </span>
+            <h2 class="text-[28px] font-black tracking-tight leading-snug text-deepNavy news-text mt-1 max-w-[340px] drop-shadow-xs">
+              1934 특화 프로그램 현장 스케치
+            </h2>
+            <div class="flex items-center justify-center space-x-2 pt-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+              <span class="w-12 h-[3px] bg-gradient-to-r from-mainBlue/20 via-mainBlue/70 to-mainBlue/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+            </div>
+          </div>
+
+          <div class="bg-mainBlue text-white p-6 rounded-[24px] text-base leading-relaxed shadow-sm news-body-content">
+            "모든 경험이 경력이 되도록 지원하는 '1934 청년 지원 프로젝트'의 열기로 지난 4월, 서울고용센터 청년ON라운지는 그 어느 때보다 뜨겁게 달아올랐습니다. AI 역량강화 특강부터 현직자 커피챗&멘토링, 경험에서 진단-가치찾기 프로그램까지, 그 생생한 현장 속으로 여러분을 초대합니다!"
+          </div>
+
+          <!-- 프로그램 ① -->
+          <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-4">
+            <div class="flex items-center space-x-2 bg-secBlue/40 p-2.5 rounded-xl">
+              <span class="bg-mainBlue text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded">01</span>
+              <span class="text-xs font-bold text-deepNavy">“AI 디지털 역량강화 특강” (2026. 4. 24.)</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 my-2">
+              <div class="w-full h-36 border-2 border-dashed border-borderBlue bg-[#0284C7]/5 rounded-xl flex items-center justify-center text-center p-2">
+                <span class="text-[10px] font-bold text-[#0284C7] leading-tight">📷 AI역량강화 사진 1</span>
+              </div>
+              <div class="w-full h-36 border-2 border-dashed border-borderBlue bg-[#0284C7]/5 rounded-xl flex items-center justify-center text-center p-2">
+                <span class="text-[10px] font-bold text-[#0284C7] leading-tight">📷 AI역량강화 사진 2</span>
+              </div>
+            </div>
+
+            <h4 class="text-lg font-black text-[#0284C7]">"AI, 이제는 쓸 줄 아는 것이 경쟁력"</h4>
+            <div class="article-body font-normal text-slate-600 news-body-content space-y-4">
+              <p>그동안 챗GPT나 제미나이를 단순히 궁금한 것을 묻거나 짧은 글을 다듬는 용도로만 사용해오셨나요? 이번 특강은 그런 '기초적 활용'의 틀을 깨고, 현업에서 즉시 통하는 AI활용 능력을 기르는 시간이었습니다. 단순한 텍스트 생성을 넘어, 방대한 데이터를 체계적으로 분석하고 이를 한눈에 들어오는 표와 그래프로 시각화하는 구체적인 테크닉을 다루었습니다. 특히 정보의 성격에 따라 어떤 AI 모델을 선택해야 최상의 결과물을 얻을 수 있는지, 상황별 '도구 최적화 전략'을 배우며 AI 활용의 깊이를 더했습니다. 거창한 기술이 아니라, 우리가 이미 알고 있는 도구를 가장 똑똑하게 부리는 법을 배우며 실질적인 직무 경쟁력을 키워준 밀도 높은 커리큘럼이었습니다.</p>
+            </div>
+            
+            <div class="bg-[#EFF9FC] p-5 rounded-[24px] border border-[#BAE6FD] italic text-[#475569] news-body-content flex items-start space-x-3">
+              <!-- 요청사항: 고드래곤 이름 및 동그란 1번 사진 교체 반영 -->
+              <div class="w-10 h-10 rounded-full overflow-hidden border border-[#0284C7] flex-none">
+                <img src="1번.jpg" alt="고드래곤" class="w-full h-full object-cover">
+              </div>
+              <p>
+                "AI가 사람을 대체한다는 뉴스를 접하면서 '나도 제대로 배워야겠다'는 생각이 들었어요. 막연한 불안감으로 신청했는데, 오히려 AI를 내 편으로 만드는 법을 배우고 나니 자신감이 생겼습니다. — 청년ON기자단 정수연 기자"
+              </p>
+            </div>
+          </div>
+
+          <!-- 프로그램 ② -->
+          <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-4">
+            <div class="flex items-center space-x-2 bg-secBlue/40 p-2.5 rounded-xl">
+              <span class="bg-mainBlue text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded">02</span>
+              <span class="text-xs font-bold text-deepNavy">“경영사무 현직자 커피챗” (2026. 4. 28.)</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 my-2">
+              <div class="w-full h-36 border-2 border-dashed border-borderBlue bg-[#0284C7]/5 rounded-xl flex items-center justify-center text-center p-2">
+                <span class="text-[10px] font-bold text-[#0284C7] leading-tight">📷 커피챗 사진 1</span>
+              </div>
+              <div class="w-full h-36 border-2 border-dashed border-borderBlue bg-[#0284C7]/5 rounded-xl flex items-center justify-center text-center p-2">
+                <span class="text-[10px] font-bold text-[#0284C7] leading-tight">📷 커피챗 사진 2 (추가)</span>
+              </div>
+            </div>
+
+            <h4 class="text-lg font-black text-deepNavy">"현직자가 직접 말해주는, 지금 취업 시장의 현실"</h4>
+            <div class="article-body font-normal text-slate-600 news-body-content space-y-4">
+              <p>취업 준비하면서 가장 듣고 싶은 말이 불가요? 아마 "지금 회사에서 진짜 원하는 게 뭔지"일 거예요. 커피챗 프로그램은 바로 그 궁금증에 대한 답을 얻을 수 있는 자리였습니다. 현직자 멘토와 함께, 최근 채용 시장의 현실과 기업이 진짜로 원하는 역량이 무엇인지 생생하게 들었습니다. "스펙보다 자기객관화", "공부머리와 일머리는 다르다", "신입의 진짜 정의"까지 — 취업 준비하면서 한 번쯤 흔들렸던 그 질문들에 현직자가 직접 답해줬습니다.</p>
+              <p>딱딱한 강의가 아니라 마음의 긴장을 녹여주는 커피 한 잔을 곁들인 소그룹 단위의 편안한 분위기 속에서 취준생 청년들은 여느 취업 컨설팅 프로그램에서도 알 수 없는 “진짜” 정보를 얻을 수 있었습니다.</p>
+            </div>
+            
+            <div class="bg-[#EFF9FC] p-5 rounded-[24px] border border-[#BAE6FD] italic text-[#475569] news-body-content flex items-start space-x-3">
+              <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold flex-none">서</div>
+              <p>
+                “실제 기업의 사례들을 들어 설명해주셔서 훨씬 와닿았어요. AI 활용법 같은 요즘 채용 트렌드도 짚어주셨고, 무엇보다 너무 재밌게 진행해주셔서 지루할 틈이 없었어요. 이런 현직자 멘토링이 더 많아졌으면 좋겠습니다! “ — 청년인턴 서희선
+              </p>
+            </div>
+          </div>
+
+          <!-- 프로그램 ③ -->
+          <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-4">
+            <div class="flex items-center space-x-2 bg-secBlue/40 p-2.5 rounded-xl">
+              <span class="bg-[#0369A1] text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded">03</span>
+              <span class="text-xs font-bold text-deepNavy">“경력진단 프로그램” (2026. 4. 28.)</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 my-2">
+              <div class="w-full h-36 border-2 border-dashed border-borderBlue bg-[#0284C7]/5 rounded-xl flex items-center justify-center text-center p-2">
+                <span class="text-[10px] font-bold text-[#0284C7] leading-tight">📷 경력진단 사진 1</span>
+              </div>
+              <div class="w-full h-36 border-2 border-dashed border-borderBlue bg-[#0284C7]/5 rounded-xl flex items-center justify-center text-center p-2">
+                <span class="text-[10px] font-bold text-[#0284C7] leading-tight">📷 경력진단 사진 2</span>
+              </div>
+            </div>
+
+            <h4 class="text-lg font-black text-deepNavy">"경험과 경력은 다르다 — 내 커리어를 제대로 들여다볼 시간"</h4>
+            <div class="article-body font-normal text-slate-600 news-body-content space-y-4">
+              <p>내가 쌓아온 경험들, 과연 '경력'이 될 수 있을까요? 이 프로그램은 그 질문에서 출발합니다. 지금 내가 속한 업계와 직무가 나와 맞는지를 진단하는 '블랙박스 프로그램', 내가 일과 직무를 선택할 때 무엇을 가장 중요하게 생각하는지 찾아보는 '프레디저 경력진단', 그리고 중장기적인 커리어 목표를 직접 설계해보는 ‘리어 매트릭스'까지 — 단순한 취업 스펙 점검을 넘어, 나답게 커리어를 설계하는 방법을 배울 수 있는 시간이었습니다.</p>
+            </div>
+            
+            <div class="bg-[#EFF9FC] p-5 rounded-[24px] border border-[#BAE6FD] italic text-[#475569] news-body-content flex items-start space-x-3">
+              <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold flex-none">이</div>
+              <p>
+                "성취감, 소속감, 인적 네트워크 등 다양한 기준으로 경력을 진단한다는 점이 인상적이었어요. 제가 커리어에서 가장 중요하게 생각하는 가치가 무엇인지 명확히 정리하는 순간이었고, 앞으로 나아갈 방향에 대한 동기부여도 됐습니다. — 청년인턴 이현진"
+              </p>
+            </div>
+          </div>
+
+          <!-- 하단 마무리 문구 -->
+          <p class="text-center font-bold text-sm text-mainBlue pt-4">
+            1934 청년 특화 프로그램은 앞으로도 계속됩니다! 다음 프로그램 놓치지 않으려면? 서울고용센터의 오픈카톡방과 인스타그램을 주시하세요! 😉
+          </p>
+        </div>
+
+        <!-- [페이지 6] 04 현직자 딥다이브: 취업준비콘서트 -->
+        <div class="page-slide space-y-6" data-sub="취업준비콘서트" data-index="4 / 8">
+          <div class="flex flex-col items-center text-center space-y-3 mb-10 pb-6 border-b border-secBlue/60">
+            <span class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-secBlue/80 text-mainBlue text-xs font-black tracking-widest uppercase rounded-full border border-borderBlue/50 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue animate-ping"></span>
+              <span>현직자 딥다이브: 실전의 기술</span>
+            </span>
+            <h2 class="text-[28px] font-black tracking-tight leading-snug text-deepNavy news-text mt-1 max-w-[340px] drop-shadow-xs">
+              취업준비콘서트 현장 스케치
+            </h2>
+            <div class="flex items-center justify-center space-x-2 pt-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+              <span class="w-12 h-[3px] bg-gradient-to-r from-mainBlue/20 via-mainBlue/70 to-mainBlue/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+            </div>
+          </div>
+
+          <p class="text-base text-slate-600 news-body-content leading-relaxed">
+            관심 있는 기업의 현직자를 직접 만나 채용 트렌드와 직무 이야기를 듣는 시간! 4월 3일에는 근로복지공단, 17일에는 제약 선두기업 한미그룹, 15일과 22일에는 각각 넷마블과 펄어비스가 이곳을 찾았습니다. 이어서 5월 6일에는 이마트_신세계그룹, 공기업 취준생들의 꿈의 직장인 인천국제공항공사(5/8)까지 — 청년들의 열기가 남달랐던 세 현장 — 한미그룹, 이마트·신세계그룹, 인천국제공항공사를 집중 조명합니다.
+          </p>
+
+          <div class="space-y-6">
+            <!-- 한미그룹 -->
+            <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-3">
+              <span class="inline-block bg-[#0284C7] text-white text-[11px] font-bold px-3 py-1 rounded-full">
+                4. 17. | 제약바이오 산업을 이끄는 한미그룹
+              </span>
+              <div class="w-full h-48 border-2 border-dashed border-[#0284C7]/50 bg-[#0284C7]/5 rounded-2xl flex flex-col items-center justify-center text-center p-5 my-2">
+                <span class="text-sm font-extrabold text-[#0284C7]">📷 한미그룹 취콘 대강당 현장 사진</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                이날만큼은 청년ON라운지가 좁게 느껴졌습니다. 한미그룹의 공채 기간과 맞물려 실제 지원자들이 대거 몰리면서 무려 <strong class="text-mainBlue">162명</strong>이 자리를 채웠고, 늦게 도착한 청년들은 서서라도 듣겠다며 발걸음을 멈추지 않았습니다. 역대 취업준비콘서트 중 가장 많은 인원이 참여한 날이었습니다.
+              </p>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                현장의 열기는 수치만으로는 다 설명되지 않습니다. 한미그룹 인사 담당자는 쏟아지는 질문 하나하나를 끝까지 세세하게 답해줬고, 질문하는 청년들의 열의는 행사가 끝날 시간이 한참 지나도록 수그러들지 않았습니다. 결국 역대 취업준비콘서트 중 가장 길게 이어진 자리로 기록됐습니다. 현직자에게서 직접 듣는 생생한 정보의 가치가 고스란히 느껴지는 시간이었습니다.
+              </p>
+            </div>
+
+            <!-- 넷마블 -->
+            <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-3">
+              <span class="inline-block bg-[#0369A1] text-white text-[11px] font-bold px-3 py-1 rounded-full">
+                4. 15. | K-게임의 중심 넷마블
+              </span>
+              <div class="w-full h-48 border-2 border-dashed border-[#0284C7]/50 bg-[#0284C7]/5 rounded-2xl flex flex-col items-center justify-center text-center p-5 my-2">
+                <span class="text-sm font-extrabold text-[#0284C7]">📷 넷마블 취콘 현장 스케치 사진</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                게임 산업에 관심 있는 취준생이라면 귀가 번쩍 뜨일 만한 자리였죠. 넷마블 취콘에도 무려 100명의 청년들이 찾아왔습니다. 넷마블 현직자는 게임 산업 전반 소개부터 시작해 사업PM, 마케팅, 퍼블리싱 개발, 인턴십 프로세스까지 직무별로 촘촘하게 이야기를 풀어냈습니다.
+              </p>
+            </div>
+
+            <!-- 인천국제공항공사 -->
+            <div class="p-6 rounded-[24px] border border-[#0F172A] bg-white shadow-sm space-y-3">
+              <span class="inline-block bg-[#0F172A] text-white text-[11px] font-bold px-3 py-1 rounded-full">
+                5. 8. | 12년 연속 세계 공항서비스 1위 인천국제공항공사
+              </span>
+              <div class="w-full h-48 border-2 border-dashed border-[#0284C7]/50 bg-[#0284C7]/5 rounded-2xl flex flex-col items-center justify-center text-center p-5 my-2">
+                <span class="text-sm font-extrabold text-[#0284C7]">📷 인천국제공항공사 현장 사진 (전달 예정)</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                공기업 취업을 준비 중인 청년들의 발걸음이 이어졌습니다. 공기업만의 채용 프로세스와 면접 준비 노하우는 물론, 다양한 직무 설명들까지! — 참여한 청년들은 메모하느라 손이 바빴을 시간이었습니다. 이날 현장을 직접 취재한 청년ON기자단 정수연 기자의 현직자 심층 인터뷰는 다음 페이지에서 이어집니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- [페이지 7] 05 현직자 딥다이브: 심층 인터뷰 -->
+        <div class="page-slide space-y-6" data-sub="심층 인터뷰" data-index="5 / 8">
+          <div class="flex flex-col items-center text-center space-y-3 mb-10 pb-6 border-b border-secBlue/60">
+            <span class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-secBlue/80 text-mainBlue text-xs font-black tracking-widest uppercase rounded-full border border-borderBlue/50 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue animate-ping"></span>
+              <span>현직자 딥다이브: 실전의 기술</span>
+            </span>
+            <h2 class="text-[28px] font-black tracking-tight leading-snug text-deepNavy news-text mt-1 max-w-[340px] drop-shadow-xs">
+              인천국제공항공사 인터뷰
+            </h2>
+            <p class="text-sm font-bold text-[#0284C7] tracking-tight max-w-[320px]">
+              "떨어도 괜찮아요. 단, 준비한 말은 다 하고 나오세요"
+            </p>
+            <div class="flex items-center justify-center space-x-2 pt-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+              <span class="w-12 h-[3px] bg-gradient-to-r from-mainBlue/20 via-mainBlue/70 to-mainBlue/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+            </div>
+          </div>
+
+          <!-- Profile -->
+          <div class="p-5 rounded-[24px] border border-secBlue bg-white flex items-center space-x-3 shadow-xs">
+            <div class="w-12 h-12 rounded-full bg-[#0284C7] text-white flex items-center justify-center font-bold text-base flex-none">
+              한
+            </div>
+            <div>
+              <h4 class="text-sm font-black text-deepNavy">한정석 과장</h4>
+              <p class="text-[11px] text-slate-500">인천국제공항공사 인사팀 | 2017년 입사, 현재 10년 차</p>
+            </div>
+          </div>
+
+          <div class="w-full h-52 border-2 border-dashed border-[#0284C7]/50 bg-[#0284C7]/5 rounded-2xl flex flex-col items-center justify-center text-center p-5 my-6 transition-all">
+            <div class="w-12 h-12 rounded-full bg-[#0284C7]/10 flex items-center justify-center text-[#0284C7] mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="text-sm font-extrabold text-[#0284C7]">📷 인천국제공항공사 현직자 프로필 사진 (추후 전달 예정)</span>
+          </div>
+
+          <!-- Q&A 리스트 -->
+          <div class="space-y-5">
+            <div class="p-5 rounded-2xl bg-white border border-secBlue space-y-1">
+              <p class="text-xs font-bold text-mainBlue">Q. 신입을 볼 때 가장 중요하게 생각하는 역량은 무엇인가요?</p>
+              <p class="text-sm text-slate-600 leading-relaxed font-light pl-2 border-l-2 border-mainBlue news-body-content">
+                "책임감, 소통 능력, 도전 정신입니다. 사실 이 세 가지를 한마디로 요약하면 결국 저희 회사가 추구하는 인재상과 맞닿아 있어요. 단순히 스펙이 좋다고 되는 게 아니라, 이 역량들이 실제 경험 속에서 어떻게 발현됐는지를 봅니다."
+              </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white border border-secBlue space-y-1">
+              <p class="text-xs font-bold text-mainBlue">Q. 직접 취업을 준비하셨을 때 어떻게 하셨나요?</p>
+              <p class="text-sm text-slate-600 leading-relaxed font-light pl-2 border-l-2 border-mainBlue news-body-content">
+                "약 1년을 준비했는데요, 처음 3~4개월은 어학 성적과 한국사능력검정시험 같은 가점 요소들을 채우는 데 집중했어요. 서류 스펙이 어느 정도 갖춰졌다 싶을 때 필기와 면접 준비를 시작했는데, 솔직히 돌아보면 면접 준비가 충분하지 못했던 것 같습니다. 지금 준비하시는 분들은 정량적인 스펙을 최대한 빨리 채운 뒤, 필기와 면접도 동시에 꾸준히 준비하시길 추천드립니다."
+              </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white border border-secBlue space-y-1">
+              <p class="text-sm text-slate-600 leading-relaxed font-light pl-2 border-l-2 border-mainBlue news-body-content">
+                "면접볼 때, 면접장에서 긴장하는 건 너무나 당연합니다. 면접관들도 그 점은 충분히 감안하고 있어요. 중요한 건 '떨면서 말하는 것'과 '긴장해서 준비한 말을 못 하고 나오는 것' 사이의 차이입니다. 이 둘은 완전히 다른 이야기예요. 면접 현장에서는 딱 하나만 마음에 새기세요. <strong class="text-[#0284C7]">"준비한 말은 다 하고 나오겠다."</strong> 그 마음가짐 하나가 결과를 바꿀 수 있습니다."
+              </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white border border-secBlue space-y-1">
+              <p class="text-xs font-bold text-mainBlue">Q. 취업준비콘서트, 취준생들에게 추천하시나요?</p>
+              <p class="text-sm text-slate-600 leading-relaxed font-light pl-2 border-l-2 border-mainBlue news-body-content">
+                "진로가 확고한 분이라면 관심 분야 특강을 들으면서 실질적인 인사이트를 얻을 수 있고, 아직 방향을 찾고 있는 분이라면 다양한 특강을 들으며 나침반을 만들어가는 과정 자체가 큰 도움이 됩니다. 인터넷으로 얻는 정보와는 질이 다릅니다. 현장 질의응답 하나만으로도 올 이유가 충분해요."
+              </p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-white border border-secBlue space-y-1">
+              <p class="text-xs font-bold text-mainBlue">Q. 마지막으로 취업 준비 중인 청년들에게 한마디 해주신다면요?</p>
+              <p class="text-sm text-slate-700 leading-relaxed font-bold pl-2 border-l-2 border-mainBlue news-body-content">
+                "포기하지 않는 것, 그게 전부입니다. 저도 첫 번째 필기 과목을 망쳤다고 생각해서 중도 퇴실까지 고려했었어요. 그런데 포기하지 않고 끝까지 치르고 나왔더니 합격할 수 있었습니다. 취업 준비는 결국 마지막까지 자리를 지키는 사람이 이기는 싸움입니다. 끈기 있게 임하다 보면, 반드시 좋은 결과가 따라옵니다."
+              </p>
+            </div>
+          </div>
+          
+          <p class="text-right text-xs font-bold text-slate-400">취재 및 인터뷰 I 정수연 기자 (청년ON기자단)</p>
+        </div>
+
+        <!-- [페이지 8] 06 청년ON기자단 현장브리핑: 모의면접DAY 체험기 -->
+        <div class="page-slide space-y-6" data-sub="기자단 브리핑 ①" data-index="6 / 8">
+          <div class="flex flex-col items-center text-center space-y-3 mb-10 pb-6 border-b border-secBlue/60">
+            <span class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-secBlue/80 text-mainBlue text-xs font-black tracking-widest uppercase rounded-full border border-borderBlue/50 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue animate-ping"></span>
+              <span>기자단 브리핑</span>
+            </span>
+            <h2 class="text-[28px] font-black tracking-tight leading-snug text-deepNavy news-text mt-1 max-w-[340px] drop-shadow-xs">
+              모의면접DAY 체험기
+            </h2>
+            <p class="text-sm font-bold text-[#0284C7] tracking-tight max-w-[320px]">
+              현직자 면접관과 함께한 면접 연습으로 실전 경험 UP!
+            </p>
+            <div class="flex items-center justify-center space-x-2 pt-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+              <span class="w-12 h-[3px] bg-gradient-to-r from-mainBlue/20 via-mainBlue/70 to-mainBlue/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+            </div>
+          </div>
+
+          <!-- 기자 프로필 -->
+          <div class="p-4 rounded-2xl bg-white border border-secBlue flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-[#E0F2FE] text-[#0369A1] flex items-center justify-center font-bold text-sm">
+              박
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-deepNavy">박수민 기자</h4>
+              <p class="text-[10px] text-slate-500">청년ON기자단</p>
+            </div>
+          </div>
+
+          <p class="text-sm text-slate-600 news-body-content leading-relaxed">
+            취업 준비 1년 차, 웬만한 모의면접은 다 겪어봤다고 자부하는 청년ON기자단의 박수민 기자가 3.24. 서울고용센터의 대기업 인성면접 대비 모의면접에 당당히 등판했는데, 여기..다른 곳과는 차별화되는 특별한 무엇인가가 있었습니다.
+          </p>
+
+          <!-- 3개 포인트 상세 카드 -->
+          <div class="space-y-4">
+            <div class="p-5 rounded-3xl border border-secBlue bg-white shadow-sm space-y-2">
+              <span class="inline-block bg-[#0284C7] text-white text-[11px] font-bold px-2.5 py-0.5 rounded">1</span>
+              <h4 class="text-base font-bold text-deepNavy">1. 압도적인 실전 환경: "실전과 같은 긴장감 가득!”</h4>
+              <div class="w-full h-32 border-2 border-dashed border-[#0284C7]/30 bg-[#0284C7]/5 rounded-xl flex items-center justify-center text-center p-2 mb-2">
+                <span class="text-[10px] font-bold text-[#0284C7] leading-tight">📷 모의면접데이 사진 배치 (작게 배치)</span>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed news-body-content">
+                학교에서 진행했던 모의면접 프로그램은 평소 익숙한 환경이었던지라, ‘모의’라는 생각이 강하게 들어 특별히 긴장이 되지는 않았습니다. 하지만 서울고용센터의 모의면접는 별도 분리된 지원자 대기실의 무거운 공기부터, 현직자 면접관의 존재, 실제 면접 프로세스를 그대로 재현하여 지원자가 “진짜”면접이라고 느낄 수 있는 환경을 만들어줘서, 확 긴장이 되었습니다.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-3xl border border-secBlue bg-white shadow-sm space-y-2">
+              <span class="inline-block bg-[#0284C7] text-white text-[11px] font-bold px-2.5 py-0.5 rounded">2</span>
+              <h4 class="text-base font-bold text-deepNavy">2. 촌철살인 피드백: "허를 찌르는 질문과 피드백!"</h4>
+              <p class="text-xs text-slate-600 leading-relaxed news-body-content mb-3">
+                모의면접 후 진행된 피드백 타임에서는 면접관 입장에서 실제로 지원자의 답변이 어떻게 들리는지, 어떤 지원자를 원하는지, 회사 입장에서 불쾌하게 느껴질 수 있는 발언이 무엇인지 가감없이 지적해주셨는데, 지금까지 참여해본 모의면접 중에서 가장 솔직한 평가였습니다.
+              </p>
+              <p class="text-xs text-slate-600 leading-relaxed news-body-content mb-3">
+                특히 기억에 남았던 부분은 현직자 면접관님의 '졸업유예'에 대한 지적이었습니다. 학교 프로그램 참여를 위해 유예했다는 솔직한 답변에 "이득을 취하려 유예했다는 인상을 줄 수 있어 좋지 않다"는 피드백을 해주셨는데요, 졸업유예 기간이 면접관 눈에는 공백기처럼 비칠 수 있다는 점, 이를 커버할 수 있는 답변을 미리 준비해두는 것이 중요하다는 것을 알게됐습니다.
+              </p>
+              <p class="text-xs text-slate-600 leading-relaxed news-body-content mb-3">
+                그리고, 면접이 끝난 후, 일주일 내로 [평가기록지]를 보내주시는데, 제가 부족했던 부분을 기록지로 디테일하게 확인할 수 있어 큰 도움이 됐습니다.
+              </p>
+              <div class="w-full h-32 border-2 border-dashed border-[#0284C7]/30 bg-[#0284C7]/5 rounded-xl flex items-center justify-center text-center p-2">
+                <span class="text-[10px] font-bold text-[#0284C7] leading-tight">📷 평가기록지 사진 (우측에 작게 배치)</span>
+              </div>
+            </div>
+
+            <div class="p-5 rounded-3xl border border-secBlue bg-white shadow-sm space-y-2">
+              <span class="inline-block bg-[#0284C7] text-white text-[11px] font-bold px-2.5 py-0.5 rounded">3</span>
+              <h4 class="text-base font-bold text-deepNavy">3. 5인 5색 지원자들과의 만남</h4>
+              <p class="text-xs text-slate-600 leading-relaxed news-body-content">
+                다양한 경력과 배경을 가진 분들이 모여, 같은 질문에 저마다 다른 방식으로 답하는 모습을 옆에서 직접 들을 수 있었던 시간도 큰 자산이 되었습니다. 다른 지원자분들이 받는 피드백을 함께 들으며, 그분들의 장점을 저도 습득해야겠다는 동기부여도 자연스럽게 이뤄졌습니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- 지원자 한마디 & 기자 한마디 -->
+          <div class="bg-secBlue p-5 rounded-3xl border border-borderBlue space-y-3">
+            <p class="text-sm font-black text-mainBlue">[Interview & Closing]</p>
+            <p class="text-xs text-slate-700 leading-relaxed news-body-content">
+              <strong>함께한 지원자의 한마디:</strong> 피드백이 너무 솔직하고 심도 깊어서 큰 도움이 됐습니다.
+            </p>
+            <p class="text-xs text-slate-700 leading-relaxed news-body-content">
+              <strong>기자단 한마디:</strong> 현재 취준이 막막하다면? 내 면접 실력의 진짜 민낯을 마주할 수 있는 서울고용센터의 모의면접데이, 꼭 한 번 참여해 보세요!
+            </p>
+          </div>
+        </div>
+
+        <!-- [페이지 9] 07 청년ON기자단 현장브리핑: 상생 채용박람회 -->
+        <div class="page-slide space-y-6" data-sub="기자단 브리핑 ②" data-index="7 / 8">
+          <div class="flex flex-col items-center text-center space-y-3 mb-10 pb-6 border-b border-secBlue/60">
+            <span class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-secBlue/80 text-mainBlue text-xs font-black tracking-widest uppercase rounded-full border border-borderBlue/50 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue animate-ping"></span>
+              <span>기자단 브리핑</span>
+            </span>
+            <h2 class="text-[28px] font-black tracking-tight leading-snug text-deepNavy news-text mt-1 max-w-[340px] drop-shadow-xs">
+              상생 채용박람회 취재기
+            </h2>
+            <p class="text-sm font-bold text-[#0284C7] tracking-tight max-w-[320px]">
+              취재 및 촬영: 청년ON기자단 박수민
+            </p>
+            <div class="flex items-center justify-center space-x-2 pt-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+              <span class="w-12 h-[3px] bg-gradient-to-r from-mainBlue/20 via-mainBlue/70 to-mainBlue/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+            </div>
+          </div>
+
+          <div class="w-full h-48 border-2 border-dashed border-borderBlue bg-secBlue rounded-xl flex items-center justify-center text-center p-4">
+            <span class="text-xs font-bold text-deepNavy">📷 박람회 현장 사진 삽입</span>
+          </div>
+
+          <div class="article-body font-normal text-slate-700 news-body-content space-y-4">
+            <p>4월 28일과 29일, 청년ON기자단이 서울 서초구 aT센터로 출동했습니다. 이번 취재지는 바로 <strong class="text-mainBlue">'2026 대한민국 상생 채용박람회'</strong>. 고용노동부, 산업부 등 관계부처와 한국경제인협회, 동반성장위원회가 주최·주관한 이번 박람회에는 대기업 협력사 등 169개사(온라인 포함 700개사)가 참여하는 역대 최대 규모로 펼쳐졌습니다. 한 손엔 이력서, 한 손엔 부스 안내도를 들고 분주히 움직이는 청년들로 행사장은 개장 직후부터 열기로 가득했습니다.</p>
+          </div>
+
+          <div class="w-full h-44 border-2 border-dashed border-borderBlue bg-secBlue rounded-xl flex items-center justify-center text-center p-4">
+            <span class="text-xs font-bold text-deepNavy">📷 서울고용센터 부스 사진 삽입</span>
+          </div>
+
+          <div class="article-body font-normal text-slate-700 news-body-content space-y-4">
+            <p><strong class="text-mainBlue">서울고용센터도 현장 한복판에 자리를 잡았습니다.</strong> 부스에서는 취업 컨설팅도 함께 진행했는데요. 이력서·자기소개서 컨설팅이 쉴 새 없이 이어져 <strong class="text-mainBlue">양일간 총 78명이 현장에서 바로 컨설팅을 받았습니다.</strong> 주거, 해외취업, 구직자도약보장패키지, 일경험 등 다양한 취업 지원 서비스도 함께 안내되며 부스 앞은 내내 발길이 끊이지 않았습니다.</p>
+          </div>
+
+          <!-- 참여 청년 인터뷰 -->
+          <div class="p-6 rounded-[24px] border border-secBlue bg-[#FFFEE0] space-y-3 shadow-xs">
+            <span class="inline-block bg-[#EAB308] text-white text-[11px] font-bold px-3 py-1 rounded-full">
+              참여 청년 인터뷰
+            </span>
+            <div class="w-full h-44 border-2 border-dashed border-[#85CDE8] bg-white rounded-xl flex items-center justify-center text-center p-4">
+              <span class="text-xs font-bold text-[#85CDE8]">📷 서울고용센터 부스 사진 삽입2</span>
+            </div>
+            <h4 class="text-lg font-black text-deepNavy">"작년에 왔다가 또 왔어요" — 02년생 취업준비생을 만나다</h4>
+            <div class="text-sm text-slate-700 leading-relaxed news-body-content space-y-3">
+              <p>현장을 누비던 기자단이 올해로 두 번째 박람회를 찾았다는 02년생 취업준비생을 붙잡았습니다. 작년에 이어 올해도 발걸음했다는 이 청년에게 오늘 박람회에서 가장 인상 깊었던 점을 묻자 눈을 반짝이며 답했습니다.</p>
+              <p class="italic bg-white/50 p-4 rounded-xl border border-yellow-200">
+                "면접관 입장에서 면접 질문의 의도를 직접 들을 수 있었어요. 채용공고만 보다가 기업 담당자에게 직무 설명을 직접 들으니 시야가 확 넓어진 느낌이었어요. 사람인 사이트에 로그인해두면 5월 27일까지 AI 면접도 따로 볼 수 있다고 해서 꼭 활용해볼 생각이에요."
+              </p>
+              <p>
+                "경력자를 선호하다 보니 신입은 경험 쌓기도 어렵고, 그러다 보니 취업은 더 안 되는 악순환이 생기는 것 같아요." 짧은 한마디였지만, 현장의 무거운 현실이 그대로 담겨 있었습니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- 참여 후기 코멘트 -->
+          <div class="space-y-4 pt-2">
+            <span class="text-xs font-bold text-mainBlue block">🎤 기자단 참여 후기</span>
+            
+            <div class="grid grid-cols-1 gap-3">
+              <div class="p-5 rounded-2xl bg-white border border-secBlue flex flex-col space-y-3 shadow-xs">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold flex-none">이</div>
+                  <span class="text-xs font-bold text-slate-800">청년ON기자단 이주원 기자 (얼굴 사진 작게 삽입)</span>
+                </div>
+                <p class="text-xs leading-relaxed text-slate-600 news-body-content italic">
+                  "700여 개 기업이 한자리에 모인다는 게 말처럼 쉬운 일이 아닌데, 이런 자리가 매년 열든다는 사실 자체가 취준생에게는 정말 소중한 기회라고 느꼈습니다."
+                </p>
+              </div>
+
+              <div class="p-5 rounded-2xl bg-white border border-secBlue flex flex-col space-y-3 shadow-xs">
+                <div class="flex items-center space-x-2">
+                  <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold flex-none">박</div>
+                  <span class="text-xs font-bold text-slate-800">청년ON기자단 박수민 기자 (얼굴 사진 작게 삽입)</span>
+                </div>
+                <p class="text-xs leading-relaxed text-slate-600 news-body-content italic">
+                  "서울고용센터 부스에서 1934 프로젝트를 소개받은 청년들의 반응이 뜨거웠어요. '이런 프로그램이 있는 줄 몰랐다'는 말을 여러 번 들었는데, 더 많은 청년들에게 알려졌으면 좋겠다는 생각이 들었습니다."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- [페이지 10] 08 UPCOMING EVENTS & QUIZ -->
+        <!-- ─────────────────────────────────────────── -->
+        <div class="page-slide space-y-6" data-sub="EVENTS & QUIZ" data-index="8 / 8">
+          
+          <!-- 특별하게 바뀐 가운데 정렬 헤더 블록 -->
+          <div class="flex flex-col items-center text-center space-y-3 mb-10 pb-6 border-b border-secBlue/60">
+            <span class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-secBlue/80 text-mainBlue text-xs font-black tracking-widest uppercase rounded-full border border-borderBlue/50 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue animate-ping"></span>
+              <span>EVENTS & QUIZ</span>
+            </span>
+            <h2 class="text-[28px] font-black tracking-tight leading-snug text-deepNavy news-text mt-1 max-w-[340px] drop-shadow-xs">
+              일정 및 퀴즈 안내
+            </h2>
+            <div class="flex items-center justify-center space-x-2 pt-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+              <span class="w-12 h-[3px] bg-gradient-to-r from-mainBlue/20 via-mainBlue/70 to-mainBlue/20 rounded-full"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-mainBlue/40"></span>
+            </div>
+          </div>
+
+          <!-- 예정 스케줄 -->
+          <div class="p-6 rounded-[24px] border border-secBlue bg-white shadow-sm space-y-4">
+            <p class="text-sm font-bold text-deepNavy">취업 성공을 위한 든든한 조력자가 되어줄 알찬 프로그램들이 계속해서 기다리고 있습니다.</p>
+            
+            <div class="space-y-4 font-sans text-xs">
+              <!-- 5/29 -->
+              <div class="border-b pb-3 border-slate-100">
+                <div class="flex justify-between items-center">
+                  <span class="font-mono font-black text-mainBlue text-base">5/29</span>
+                  <span class="bg-secBlue text-[9px] font-black text-mainBlue px-2 py-0.5 rounded">모의면접DAY</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-1.5 leading-relaxed font-bold">내용: 현직자 면접관과 함께하는 실전 면접 연습!</p>
+              </div>
+
+              <!-- 5/28 -->
+              <div class="border-b pb-3 border-slate-100">
+                <div class="flex justify-between items-center">
+                  <span class="font-mono font-black text-mainBlue text-base">5/28</span>
+                  <span class="bg-secBlue text-[9px] font-black text-mainBlue px-2 py-0.5 rounded">경력진단</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-1.5 leading-relaxed font-bold">경험에서 가치-진가 찾기 프로그램</p>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">내용: 나만의 ‘경험’을 진짜 ‘경력’으로 바꿔주는 경력진단 프로그램</p>
+              </div>
+
+              <!-- 취업준비콘서트 -->
+              <div class="pb-2">
+                <div class="flex justify-between items-center">
+                  <span class="font-mono font-black text-[#0369A1] text-sm">취업준비콘서트 일자리톡톡</span>
+                  <span class="bg-blue-100 text-[9px] font-black text-[#0369A1] px-2 py-0.5 rounded">특강</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-1.5 leading-relaxed font-bold">내용: 현직자에게 직접 듣는 생생한 직무 토크</p>
+                <div class="bg-slate-50 p-3 rounded-xl mt-2 space-y-1 text-[11px] text-slate-500">
+                  <p>• 5/27 KAI(한국항공우주산업)</p>
+                  <p>• 6/17 하나은행</p>
+                  <p>• 6/24 LG CNS</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-[10px] text-slate-400 text-center border-t pt-3">자세한 내용은 서울고용센터 인스타그램(@moel_seoulew)에서 확인해 주세요!</p>
+          </div>
+
+          <!-- 도전! 퀴즈 ON -->
+          <div class="p-6 rounded-[24px] bg-[#EFF9FC] border-2 border-dashed border-[#85CDE8] space-y-4">
+            <div class="flex items-center space-x-2">
+              <span class="text-lg">💡</span>
+              <h3 class="text-base font-black text-mainBlue">도전! 퀴즈 ON</h3>
+            </div>
+            <p class="text-xs font-bold text-slate-500">5월호 웹진, 열심히 읽으셨죠? 그렇다면 이 퀴즈, 어렵지 않을 거예요.</p>
+            <p class="text-sm leading-relaxed text-slate-700 news-body-content">
+              <strong>Q. 다음 힌트를 읽고 빈칸을 채워주세요.</strong><br/><br/>
+              "일을 구하고 삶을 사랑하자는 마음으로 태어난 이 프로젝트. 번아웃으로 지친 청년도, 방향을 잃은 청년도, 다시 시작하고 싶은 청년도! 서울 거주 만 19세에서 34세라면 누구든 환영합니다. 역량강화부터 현직자와의 만남, 마음을 어루만져주는 특강까지. 혼자가 아닌 함께, 모든 경험이 경력이 될 수 있도록. 서울고용센터 청년ON라운지의 <strong class="text-mainBlue">「 <span id="quizBlank">OOOO</span> 」</strong> 청년 지원 프로젝트!"
+            </p>
+
+            <form id="quizForm" onsubmit="event.preventDefault(); checkQuizAnswer();" class="space-y-3">
+              <input id="quizInput" type="text" placeholder="정답 4글자를 적어주세요 (예: 1234)" class="w-full bg-white border border-borderBlue p-3 rounded-2xl text-sm font-bold text-center focus:outline-none focus:ring-2 focus:ring-mainBlue text-deepNavy">
+              <button type="submit" class="w-full bg-mainBlue hover:bg-[#0369A1] text-white font-black py-3 rounded-2xl text-xs transition-all">
+                정답 확인하기
+              </button>
+            </form>
+
+            <div id="quizSuccess" class="hidden p-4 bg-emerald-500/10 border border-emerald-500 text-emerald-600 rounded-2xl text-xs font-bold">
+              🎉 정답입니다! 인스타그램 이벤트 게시물에 정답 댓글을 남기시면 응모가 최종 완료됩니다.
+            </div>
+            <div id="quizFail" class="hidden p-4 bg-red-500/10 border border-red-500 text-red-600 rounded-2xl text-xs font-bold">
+              💡 아쉬워요! 숫자로 이루어진 4자리 프로젝트 명칭을 대조해 보세요.
+            </div>
+
+            <p class="text-[11px] text-slate-500 leading-relaxed border-t pt-3 border-borderBlue/50">
+              <strong>[참여 방법]</strong><br/>
+              서울고용센터 인스타그램(@moel_seoulew)을 팔로우하고, 이벤트 게시물에 정답을 댓글로 남겨주세요. 추첨을 통해 10명에게 커피 쿠폰을 보내드립니다.
+            </p>
+          </div>
+
+          <!-- 남산 에디터 노트 -->
+          <div class="space-y-4 pt-4">
+            <div class="w-full h-52 border-2 border-dashed border-[#0284C7]/50 bg-[#0284C7]/5 rounded-2xl flex flex-col items-center justify-center text-center p-5 my-6 transition-all">
+              <span class="text-sm font-extrabold text-[#0284C7]">📷 남산 사진 프레임 (추후 전달 예정)</span>
+            </div>
+            <div class="font-serif italic text-base leading-[1.9] text-[#2C4148] text-center space-y-4 news-body-content">
+              <p>"5월 of 남산은 초록이 한창입니다."</p>
+              <p>저마다의 속도로 자라난 나무들이 모여 이 울창한 풍경을 만들어냈듯,</p>
+              <p>지금 이 순간 각자의 자리에서 고민하고 버티는 당신도 그렇게 조금씩, 그러나 분명하게 자라고 있습니다.</p>
+              <p>조급하지 않아도 됩니다.</p>
+              <p>돌아온 것 같은 길도, 멈춰선 것 같은 시간도 모두 당신만의 특별한 이야기가 되어 돌아올 테니까요.</p>
+              <p class="font-sans not-italic font-black text-mainBlue text-sm">그 길 위에서, 청년ON라운지가 늘 함께하겠습니다.</p>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- 스와이프 영역 종료 -->
+    </div>
+
+    <!-- ─────────────────────────────────────────── -->
+    <!-- [섹션 11] 푸터 및 하단 네비게이션 제어 바 -->
+    <!-- ─────────────────────────────────────────── -->
+    <div class="mt-auto">
+      <footer class="bg-mainBlue text-white text-center py-6 px-6 rounded-t-[32px] space-y-2">
+        <div class="flex items-center justify-center space-x-2">
+          <span class="text-base">🎙️</span>
+          <a href="https://www.instagram.com/moel_seoulew" target="_blank" class="text-xs font-bold hover:underline font-mono">@moel_seoulew</a>
+        </div>
+        <p class="text-[10px] text-sky-100 opacity-80">© 2026 서울지방고용노동청 서울고용복지+센터.</p>
+      </footer>
+
+      <!-- e-Book 고정 하단 책넘김 네비게이션 바 -->
+      <div class="fixed bottom-0 left-0 right-0 py-4 border-t border-slate-200/60 bg-white/95 backdrop-blur-md shadow-lg max-w-[430px] mx-auto z-45">
+        <div class="px-6 flex items-center justify-between font-sans">
+          <!-- 이전 쪽 -->
+          <button onclick="prevPage()" id="prevBtn" class="flex items-center space-x-1 text-sm font-black py-2.5 px-3.5 rounded-xl transition-all hover:bg-slate-100">
+            <span class="text-mainBlue">◂</span>
+            <span>이전 쪽</span>
+          </button>
+
+          <!-- 쪽수 표시 및 목차 팝업 기능 -->
+          <button onclick="toggleTOC()" class="text-sm font-black tracking-wider text-deepNavy hover:text-mainBlue">
+            <span id="pageProgressText">1 / 9</span> 쪽 <span class="text-[10px] font-medium opacity-50">(목차)</span>
+          </button>
+
+          <!-- 다음 쪽 -->
+          <button onclick="nextPage()" id="nextBtn" class="flex items-center space-x-1 text-sm font-black py-2.5 px-3.5 rounded-xl transition-all hover:bg-slate-100">
+            <span>다음 쪽</span>
+            <span class="text-mainBlue">▸</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 통합 목차 Drawer 서랍 -->
+    <div id="tocDrawer" class="fixed inset-y-0 left-0 z-50 w-80 bg-white shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col border-r border-[#CBD5E1]">
+      <div class="p-5 border-b border-secBlue bg-iceBlue flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <span class="text-mainBlue text-lg">🎙️</span>
+          <span class="font-extrabold text-sm text-deepNavy">온에어 목차</span>
+        </div>
+        <button onclick="toggleTOC()" class="text-xs font-bold text-slate-500 bg-white border px-2.5 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
+          닫기
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4 space-y-1">
+        <button onclick="jumpToPage(0)" class="w-full text-left p-3 hover:bg-secBlue rounded-xl transition-all text-sm font-bold text-deepNavy flex items-center justify-between">
+          <span>01. 메인 커버 및 라인업 목차</span>
+        </button>
+        <button onclick="jumpToPage(1)" class="w-full text-left p-3 hover:bg-secBlue rounded-xl transition-all text-sm font-bold text-deepNavy flex items-center justify-between">
+          <span>01 스페셜 로드맵: 1934 프로젝트</span>
+        </button>
+        <button onclick="jumpToPage(2)" class="w-full text-left p-3 hover:bg-secBlue rounded-xl transition-all text-sm font-bold text-deepNavy flex items-center justify-between">
+          <span>02 청년의 마음을 어루만지다</span>
+        </button>
+        <button onclick="jumpToPage(4)" class="w-full text-left p-3 hover:bg-secBlue rounded-xl transition-all text-sm font-bold text-deepNavy flex items-center justify-between">
+          <span>03 서울고용센터는 지금</span>
+        </button>
+        <button onclick="jumpToPage(5)" class="w-full text-left p-3 hover:bg-secBlue rounded-xl transition-all text-sm font-bold text-deepNavy flex items-center justify-between">
+          <span>04 현직자 딥다이브: 취업준비콘서트</span>
+        </button>
+        <button onclick="jumpToPage(6)" class="w-full text-left p-3 hover:bg-secBlue rounded-xl transition-all text-sm font-bold text-deepNavy flex items-center justify-between">
+          <span>05 현직자 딥다이브: 심층 인터뷰</span>
+        </button>
+        <button onclick="jumpToPage(7)" class="w-full text-left p-3 hover:bg-secBlue rounded-xl transition-all text-sm font-bold text-deepNavy flex items-center justify-between">
+          <span>06 청년ON기자단 현장브리핑:모의면접DAY</span>
+        </button>
+        <button onclick="jumpToPage(8)" class="w-full text-left p-3 hover:bg-secBlue rounded-xl transition-all text-sm font-bold text-deepNavy flex items-center justify-between">
+          <span>07 청년ON기자단 현장브리핑: 상생 채용박람회</span>
+        </button>
+        <button onclick="jumpToPage(9)" class="w-full text-left p-3 hover:bg-secBlue rounded-xl transition-all text-sm font-bold text-deepNavy flex items-center justify-between">
+          <span>08 UPCOMING EVENTS & QUIZ</span>
+        </button>
+      </div>
+      <div class="p-4 border-t border-slate-100 text-center bg-slate-50">
+        <span class="text-[10px] text-slate-400">© 2026 MOEL Seoul Employment Center</span>
+      </div>
+    </div>
+    <!-- TOC 서랍 딤처리 오버레이 -->
+    <div id="tocOverlay" onclick="toggleTOC()" class="hidden fixed inset-0 z-45 bg-black/50 backdrop-blur-xs max-w-[430px] mx-auto"></div>
+
+  </div> <!-- 모바일 통합 도크 종료 -->
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- 기술적 인터랙티브 e-Book 로직 -->
+  <!-- ─────────────────────────────────────────── -->
+  <script>
+    // 0. 페이지 데이터 구조 관리 (총 10개 페이지: 커버 1p + 상세 기획 8p + 서브 기획 1p)
+    let currentPageIdx = 0; // 0 ~ 9
+    const totalPages = 10;
+    const slides = document.querySelectorAll('.page-slide');
+
+    // 1. 페이지 업데이트 렌더러
+    function updatePageVisibility() {
+      slides.forEach((slide, idx) => {
+        if (idx === currentPageIdx) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      // 현재 활성화된 슬라이드의 속성 파싱 및 동기화
+      const activeSlide = slides[currentPageIdx];
+      const subTitle = activeSlide.getAttribute('data-sub') || "청년 ON AIR";
+      const pageNum = activeSlide.getAttribute('data-index') || (currentPageIdx + 1);
+
+      document.getElementById('currentChapterSub').textContent = subTitle;
+      document.getElementById('currentChapterPage').textContent = pageNum;
+      document.getElementById('pageProgressText').textContent = pageNum;
+
+      // 리딩 프로그레스 바 동기화
+      const progress = ((currentPageIdx + 1) / totalPages) * 100;
+      document.getElementById('progressBar').style.width = `${progress}%`;
+
+      // 네비게이션 버튼 비활성화 감지
+      document.getElementById('prevBtn').style.opacity = currentPageIdx === 0 ? '0.3' : '1';
+      document.getElementById('nextBtn').style.opacity = currentPageIdx === (totalPages - 1) ? '0.3' : '1';
+    }
+
+    // 2. 페이지 전환 제어 (오직 명시적인 버튼 클릭 및 목차 선택으로만 트리거됨)
+    function nextPage() {
+      if (currentPageIdx < totalPages - 1) {
+        currentPageIdx++;
+        updatePageVisibility();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    // 이전 페이지
+    function prevPage() {
+      if (currentPageIdx > 0) {
+        currentPageIdx--;
+        updatePageVisibility();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function jumpToPage(index) {
+      if (index >= 0 && index < totalPages) {
+        currentPageIdx = index;
+        updatePageVisibility();
+        setTOCState(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    // 목차 상태 제어
+    function setTOCState(isOpen) {
+      const drawer = document.getElementById('tocDrawer');
+      const overlay = document.getElementById('tocOverlay');
+      if (isOpen) {
+        drawer.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      } else {
+        drawer.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      }
+    }
+
+    function toggleTOC() {
+      const drawer = document.getElementById('tocDrawer');
+      const isOpen = !drawer.classList.contains('-translate-x-full');
+      setTOCState(!isOpen);
+    }
+
+    // 4. 모바일 뉴스(경향신문) 가독성 글자 크기 및 줄간격 배합
+    const fontSizesScale = {
+      sm: { bodySize: '16.5px', lineHeight: '1.8', titleSize: 'text-[22px]' },
+      md: { bodySize: '19px', lineHeight: '1.85', titleSize: 'text-[27px]' }, // 경향신문 가독성 모바일 최적 규격
+      lg: { bodySize: '21.5px', lineHeight: '1.95', titleSize: 'text-[32px]' }
+    };
+    let currentFontSizeKey = 'md';
+
+    document.getElementById('fontSizeBtn').addEventListener('click', () => {
+      const keys = ['sm', 'md', 'lg'];
+      const nextIdx = (keys.indexOf(currentFontSizeKey) + 1) % keys.length;
+      currentFontSizeKey = keys[nextIdx];
+      
+      document.getElementById('fontSizeBtn').querySelector('span:last-child').textContent = currentFontSizeKey;
+
+      const scale = fontSizesScale[currentFontSizeKey];
+
+      // 모든 기사 텍스트 요소를 대상으로 경향신문식 확대 적용
+      const bodies = document.querySelectorAll('.article-body p, .article-body, blockquote, .news-text, .news-body-content, p.text-xs, p.text-sm');
+      bodies.forEach(b => {
+        b.style.fontSize = scale.bodySize;
+        b.style.lineHeight = scale.lineHeight;
+      });
+    });
+
+    // 5. 퀴즈 ON 인터랙티브 제어
+    function checkQuizAnswer() {
+      const inputVal = document.getElementById('quizInput').value.replace(/\s+/g, '');
+      const successBox = document.getElementById('quizSuccess');
+      const failBox = document.getElementById('quizFail');
+      const blankSpan = document.getElementById('quizBlank');
+
+      if (inputVal === '1934' || inputVal === '일구삼사') {
+        successBox.classList.remove('hidden');
+        failBox.classList.add('hidden');
+        blankSpan.textContent = '1934';
+        blankSpan.classList.add('text-[#0284C7]', 'font-black');
+      } else {
+        failBox.classList.remove('hidden');
+        successBox.classList.add('hidden');
+      }
+    }
+
+    // 앱 초기화 구동
+    window.addEventListener('load', () => {
+      updatePageVisibility();
+    });
+  </script>
+
+</body>
+</html>
